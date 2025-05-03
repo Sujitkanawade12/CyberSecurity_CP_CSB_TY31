@@ -1,0 +1,55 @@
+body {
+    background-color: #f8f9fa;
+    padding-bottom: 20px;
+}
+
+.navbar {
+    box-shadow: 0 2px 4px rgba(0,0,0,.1);
+}
+
+.card {
+    border-radius: 10px;
+    border: none;
+    box-shadow: 0 0.125rem 0.25rem rgba(0, 0, 0, 0.075);
+}
+
+.table th {
+    background-color: #f1f5ff;
+    border-top: none;
+}
+
+.alert {
+    border-radius: 8px;
+}
+
+.bi {
+    vertical-align: -.125em;
+}
+
+/* Patient details lists */
+.diagnosis-list, .medication-list {
+    max-height: 150px;
+    overflow-y: auto;
+    padding-left: 20px;
+}
+
+/* Form styles */
+#diagnoses-container, #medications-container {
+    margin-bottom: 15px;
+}
+
+.input-group {
+    margin-bottom: 10px;
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+    .table-responsive {
+        font-size: 0.9rem;
+    }
+    
+    .btn {
+        padding: 0.25rem 0.5rem;
+        font-size: 0.8rem;
+    }
+}

@@ -1,0 +1,81 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="container mt-4">
+    <h2>Add New Patient</h2>
+    <div class="card shadow">
+        <div class="card-body">
+            <form method="POST" action="{{ url_for('add_patient') }}" id="patientForm">
+                <div class="mb-3">
+                    <label for="name" class="form-label">Full Name</label>
+                    <input type="text" class="form-control" id="name" name="name" required>
+                </div>
+                
+                <div class="mb-3">
+                    <label for="age" class="form-label">Age</label>
+                    <input type="number" class="form-control" id="age" name="age" min="0" max="120" required>
+                </div>
+                
+                <div class="mb-3">
+                    <label class="form-label">Diagnoses</label>
+                    <div id="diagnoses-container">
+                        <div class="input-group mb-2">
+                            <input type="text" class="form-control" name="diagnoses[]" placeholder="Enter diagnosis" required>
+                            <button type="button" class="btn btn-outline-primary" onclick="addField('diagnoses')">
+                                <i class="bi bi-plus"></i> Add
+                            </button>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="mb-3">
+                    <label class="form-label">Medications</label>
+                    <div id="medications-container">
+                        <div class="input-group mb-2">
+                            <input type="text" class="form-control" name="medications[]" placeholder="Enter medication" required>
+                            <button type="button" class="btn btn-outline-primary" onclick="addField('medications')">
+                                <i class="bi bi-plus"></i> Add
+                            </button>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="d-grid gap-2 d-md-flex justify-content-md-end">
+                    <button type="submit" class="btn btn-primary me-md-2">
+                        <i class="bi bi-save"></i> Save Patient
+                    </button>
+                    <a href="{{ url_for('admin_portal') }}" class="btn btn-secondary">
+                        <i class="bi bi-x-circle"></i> Cancel
+                    </a>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<script>
+function addField(type) {
+    const container = document.getElementById(`${type}-container`);
+    const newField = document.createElement('div');
+    newField.className = 'input-group mb-2';
+    newField.innerHTML = `
+        <input type="text" class="form-control" name="${type}[]" placeholder="Enter ${type.slice(0, -1)}">
+        <button type="button" class="btn btn-outline-danger" onclick="this.parentElement.remove()">
+            <i class="bi bi-trash"></i> Remove
+        </button>
+    `;
+    container.appendChild(newField);
+}
+
+document.getElementById('patientForm').addEventListener('submit', function(e) {
+    // Validate at least one diagnosis and medication
+    const diagnoses = document.getElementsByName('diagnoses[]');
+    const medications = document.getElementsByName('medications[]');
+    
+    if (diagnoses.length === 0 || medications.length === 0) {
+        e.preventDefault();
+        alert('Please add at least one diagnosis and one medication');
+    }
+});
+</script>
+{% endblock %}
