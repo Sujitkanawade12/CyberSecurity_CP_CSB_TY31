@@ -1,51 +1,89 @@
 {% extends "base.html" %}
 
 {% block content %}
-<div class="d-flex justify-content-between align-items-center mb-4">
-    <h2>Advanced Patient Portal</h2>
-    <div class="d-flex gap-2">
-        <a href="{{ url_for('common_portal') }}" class="btn btn-outline-secondary">
-            <i class="bi bi-arrow-left"></i> Common Portal
-        </a>
-        <a href="{{ url_for('logout') }}" class="btn btn-outline-danger">
-            <i class="bi bi-box-arrow-right"></i> Logout
-        </a>
+<div class="container">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h2>Admin Portal</h2>
+        <div>
+            <button id="toggleAllBtn" class="btn btn-warning me-2">
+                <i class="bi bi-lock"></i> Decrypt All
+            </button>
+            <a href="{{ url_for('common') }}" class="btn btn-outline-primary me-2">
+                <i class="bi bi-arrow-left"></i> Common Portal
+            </a>
+            <a href="{{ url_for('add_patient') }}" class="btn btn-success me-2">
+                <i class="bi bi-plus-circle"></i> Add Patient
+            </a>
+            <a href="{{ url_for('logout') }}" class="btn btn-outline-danger">
+                <i class="bi bi-box-arrow-right"></i> Logout
+            </a>
+        </div>
     </div>
-</div>
 
-<div class="alert alert-success">
-    <i class="bi bi-shield-check"></i> You are viewing decrypted patient data with administrative privileges.
-</div>
-
-<div class="card shadow">
-    <div class="card-header bg-light">
-        <h5 class="mb-0">Decrypted Patient Records</h5>
-    </div>
-    <div class="card-body">
-        <div class="table-responsive">
-            <table class="table table-hover">
-                <thead>
-                    <tr>
-                        <th>ID</th>
-                        <th>Name</th>
-                        <th>Age</th>
-                        <th>Diagnosis</th>
-                        <th>Medication</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    {% for patient in patients %}
-                    <tr>
-                        <td>{{ patient.id }}</td>
-                        <td>{{ patient.name }}</td>
-                        <td>{{ patient.age }}</td>
-                        <td>{{ patient.diagnosis }}</td>
-                        <td>{{ patient.medication }}</td>
-                    </tr>
-                    {% endfor %}
-                </tbody>
-            </table>
+    <div class="card shadow">
+        <div class="card-header bg-primary text-white">
+            <h5 class="mb-0">Patient Records</h5>
+        </div>
+        <div class="card-body">
+            {% if patients %}
+            <div class="table-responsive">
+                <table class="table table-hover">
+                    <thead>
+                        <tr>
+                            <th>ID</th>
+                            <th>Name</th>
+                            <th>Age</th>
+                            <th>Gender</th>
+                            <th>Blood Group</th>
+                            <th>Diagnosis</th>
+                            <th>Prescribed Meds</th>
+                            <th>Generic Alternatives</th>
+                            <th>Dosages</th>
+                            <th>Allergies</th>
+                            <th>Notes</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for patient in patients %}
+                        <tr data-patient-id="{{ patient.patient_id }}">
+                            <td>{{ patient.patient_id }}</td>
+                            <td>{{ patient.name }}</td>
+                            <td class="private-field">🔒 Encrypted</td>
+                            <td class="private-field">🔒 Encrypted</td>
+                            <td class="private-field">🔒 Encrypted</td>
+                            <td class="private-field">🔒 Encrypted</td>
+                            <td class="private-field">🔒 Encrypted</td>
+                            <td class="private-field">🔒 Encrypted</td>
+                            <td class="private-field">🔒 Encrypted</td>
+                            <td class="private-field">🔒 Encrypted</td>
+                            <td class="private-field">🔒 Encrypted</td>
+                            <td>
+                                <button class="btn btn-sm btn-outline-primary toggle-encryption-btn"
+                                        data-patient-id="{{ patient.patient_id }}">
+                                    <i class="bi bi-unlock"></i> Decrypt
+                                </button>
+                                <form action="{{ url_for('delete_patient', patient_id=patient.patient_id) }}" 
+                                      method="POST" class="d-inline">
+                                    <button type="submit" class="btn btn-sm btn-outline-danger"
+                                            onclick="return confirm('Delete this patient?')">
+                                        <i class="bi bi-trash"></i> Delete
+                                    </button>
+                                </form>
+                            </td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+            {% else %}
+            <div class="alert alert-info">No patient records available.</div>
+            {% endif %}
         </div>
     </div>
 </div>
+{% endblock %}
+
+{% block scripts %}
+<script src="{{ url_for('static', filename='js/admin_portal.js') }}"></script>
 {% endblock %}

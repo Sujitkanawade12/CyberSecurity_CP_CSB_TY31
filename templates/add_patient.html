@@ -4,78 +4,82 @@
 <div class="container mt-4">
     <h2>Add New Patient</h2>
     <div class="card shadow">
+        <div class="card-header bg-primary text-white">
+            <h5 class="mb-0">Patient Information Form</h5>
+        </div>
         <div class="card-body">
-            <form method="POST" action="{{ url_for('add_patient') }}" id="patientForm">
-                <div class="mb-3">
-                    <label for="name" class="form-label">Full Name</label>
-                    <input type="text" class="form-control" id="name" name="name" required>
-                </div>
-                
-                <div class="mb-3">
-                    <label for="age" class="form-label">Age</label>
-                    <input type="number" class="form-control" id="age" name="age" min="0" max="120" required>
-                </div>
-                
-                <div class="mb-3">
-                    <label class="form-label">Diagnoses</label>
-                    <div id="diagnoses-container">
-                        <div class="input-group mb-2">
-                            <input type="text" class="form-control" name="diagnoses[]" placeholder="Enter diagnosis" required>
-                            <button type="button" class="btn btn-outline-primary" onclick="addField('diagnoses')">
-                                <i class="bi bi-plus"></i> Add
+            <form method="POST" action="{{ url_for('add_patient') }}">
+                <div class="row g-3">
+                    <div class="col-md-6">
+                        <label for="name" class="form-label">Full Name</label>
+                        <input type="text" class="form-control" id="name" name="name" required>
+                    </div>
+                    <div class="col-md-3">
+                        <label for="age" class="form-label">Age</label>
+                        <input type="number" class="form-control" id="age" name="age" min="0" max="120" required>
+                    </div>
+                    <div class="col-md-3">
+                        <label for="gender" class="form-label">Gender</label>
+                        <select class="form-select" id="gender" name="gender" required>
+                            <option value="" selected disabled>Select</option>
+                            <option value="Male">Male</option>
+                            <option value="Female">Female</option>
+                            <option value="Other">Other</option>
+                        </select>
+                    </div>
+                    <div class="col-md-3">
+                        <label for="blood_group" class="form-label">Blood Group</label>
+                        <select class="form-select" id="blood_group" name="blood_group" required>
+                            <option value="" selected disabled>Select</option>
+                            {% for group in blood_groups %}
+                            <option value="{{ group }}">{{ group }}</option>
+                            {% endfor %}
+                        </select>
+                    </div>
+                    
+                    <div class="col-12">
+                        <hr>
+                        <h5>Medical Information</h5>
+                    </div>
+                    
+                    <div class="col-md-12">
+                        <label for="diagnosis" class="form-label">Diagnosis</label>
+                        <textarea class="form-control" id="diagnosis" name="diagnosis" rows="2" required></textarea>
+                    </div>
+                    <div class="col-md-6">
+                        <label for="prescribed_meds" class="form-label">Prescribed Medicines</label>
+                        <textarea class="form-control" id="prescribed_meds" name="prescribed_meds" rows="2" required></textarea>
+                    </div>
+                    <div class="col-md-6">
+                        <label for="generic_alternatives" class="form-label">Generic Alternatives</label>
+                        <textarea class="form-control" id="generic_alternatives" name="generic_alternatives" rows="2"></textarea>
+                    </div>
+                    <div class="col-md-6">
+                        <label for="dosages" class="form-label">Dosages</label>
+                        <textarea class="form-control" id="dosages" name="dosages" rows="2" required></textarea>
+                    </div>
+                    <div class="col-md-6">
+                        <label for="allergies" class="form-label">Allergies</label>
+                        <input type="text" class="form-control" id="allergies" name="allergies">
+                    </div>
+                    <div class="col-12">
+                        <label for="notes" class="form-label">Additional Notes</label>
+                        <textarea class="form-control" id="notes" name="notes" rows="3"></textarea>
+                    </div>
+                    
+                    <div class="col-12 mt-4">
+                        <div class="d-grid gap-2 d-md-flex justify-content-md-end">
+                            <button type="submit" class="btn btn-primary me-md-2">
+                                <i class="bi bi-save"></i> Save Patient
                             </button>
+                            <a href="{{ url_for('admin_portal') }}" class="btn btn-secondary">
+                                <i class="bi bi-x-circle"></i> Cancel
+                            </a>
                         </div>
                     </div>
-                </div>
-                
-                <div class="mb-3">
-                    <label class="form-label">Medications</label>
-                    <div id="medications-container">
-                        <div class="input-group mb-2">
-                            <input type="text" class="form-control" name="medications[]" placeholder="Enter medication" required>
-                            <button type="button" class="btn btn-outline-primary" onclick="addField('medications')">
-                                <i class="bi bi-plus"></i> Add
-                            </button>
-                        </div>
-                    </div>
-                </div>
-                
-                <div class="d-grid gap-2 d-md-flex justify-content-md-end">
-                    <button type="submit" class="btn btn-primary me-md-2">
-                        <i class="bi bi-save"></i> Save Patient
-                    </button>
-                    <a href="{{ url_for('admin_portal') }}" class="btn btn-secondary">
-                        <i class="bi bi-x-circle"></i> Cancel
-                    </a>
                 </div>
             </form>
         </div>
     </div>
 </div>
-
-<script>
-function addField(type) {
-    const container = document.getElementById(`${type}-container`);
-    const newField = document.createElement('div');
-    newField.className = 'input-group mb-2';
-    newField.innerHTML = `
-        <input type="text" class="form-control" name="${type}[]" placeholder="Enter ${type.slice(0, -1)}">
-        <button type="button" class="btn btn-outline-danger" onclick="this.parentElement.remove()">
-            <i class="bi bi-trash"></i> Remove
-        </button>
-    `;
-    container.appendChild(newField);
-}
-
-document.getElementById('patientForm').addEventListener('submit', function(e) {
-    // Validate at least one diagnosis and medication
-    const diagnoses = document.getElementsByName('diagnoses[]');
-    const medications = document.getElementsByName('medications[]');
-    
-    if (diagnoses.length === 0 || medications.length === 0) {
-        e.preventDefault();
-        alert('Please add at least one diagnosis and one medication');
-    }
-});
-</script>
 {% endblock %}
